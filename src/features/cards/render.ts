@@ -35,6 +35,11 @@ function frame(
 export function renderCard(report: GitHubReport, theme: ThemeId = "default") {
   const accent = themes[theme].accent;
   const ranking = activityGrade(report);
+  const visibilityLabel = report.periods.some(
+    (p) => p.includesAnonymizedContributions,
+  )
+    ? "Public + shared anonymous counts"
+    : "Public-only";
   const badge = `<circle cx="650" cy="213" r="52" fill="${accent}" fill-opacity=".1" stroke="${accent}" stroke-opacity=".5"/><text x="650" y="231" text-anchor="middle" font-size="52" font-weight="800" fill="${accent}">${ranking?.grade ?? "—"}</text><text x="650" y="285" text-anchor="middle" font-size="11" fill="${themes[theme].muted}">${ranking ? "ACTIVITY GRADE" : "GRADE UNAVAILABLE"}</text>`;
   const sum = (key: "commits" | "pullRequests" | "issues") =>
     report.periods.reduce((total, p) => total + p[key], 0);
@@ -61,9 +66,9 @@ export function renderCard(report: GitHubReport, theme: ThemeId = "default") {
       report.profile.publicRepositories.toLocaleString("en-US"),
     ],
   ];
-  const description = `${report.profile.login}: ${contributions} contributions; ${metrics.map(([label, value]) => `${value} ${label}`).join(", ")}. ${period}. GitHub-provided counts; sums across fetched years are calculated. Public-only lookup. Coverage may be incomplete.`;
+  const description = `${report.profile.login}: ${contributions} contributions; ${metrics.map(([label, value]) => `${value} ${label}`).join(", ")}. ${period}. GitHub-provided counts; sums across fetched years are calculated. ${visibilityLabel}. No private repository details are accessed. Coverage may be incomplete.`;
   return frame(
-    `<text x="36" y="79" font-size="12" fill="${accent}">${escapeXml(period)}</text><text x="36" y="124" font-size="32" font-weight="700" ${Array.from(report.profile.name || report.profile.login).length > 20 ? 'textLength="700" lengthAdjust="spacingAndGlyphs"' : ""}>${shorten(report.profile.name || report.profile.login)}’s Wrapped</text><text x="36" y="152" font-size="14" fill="${themes[theme].muted}">@${escapeXml(report.profile.login)}</text><text x="36" y="235" font-size="68" font-weight="800" fill="${accent}">${contributions}</text><text x="38" y="261" font-size="15">contributions across fetched history</text>${badge}${metrics.map(([label, value], index) => `<text x="${36 + index * 190}" y="324" font-size="29" font-weight="700">${value}</text><text x="${36 + index * 190}" y="348" font-size="12" fill="${themes[theme].muted}">${label}</text>`).join("")}<text x="36" y="382" font-size="10" fill="${themes[theme].muted}">Public-only · ${report.mode === "all-time" ? "Calculated sums of GitHub counts" : "GitHub-provided counts"} · ${report.coverage.complete ? "Available coverage" : "Partial coverage"} · Updated ${escapeXml(report.retrievedAt.slice(0, 10))}</text>`,
+    `<text x="36" y="79" font-size="12" fill="${accent}">${escapeXml(period)}</text><text x="36" y="124" font-size="32" font-weight="700" ${Array.from(report.profile.name || report.profile.login).length > 20 ? 'textLength="700" lengthAdjust="spacingAndGlyphs"' : ""}>${shorten(report.profile.name || report.profile.login)}’s Wrapped</text><text x="36" y="152" font-size="14" fill="${themes[theme].muted}">@${escapeXml(report.profile.login)}</text><text x="36" y="235" font-size="68" font-weight="800" fill="${accent}">${contributions}</text><text x="38" y="261" font-size="15">contributions across fetched history</text>${badge}${metrics.map(([label, value], index) => `<text x="${36 + index * 190}" y="324" font-size="29" font-weight="700">${value}</text><text x="${36 + index * 190}" y="348" font-size="12" fill="${themes[theme].muted}">${label}</text>`).join("")}<text x="36" y="382" font-size="10" fill="${themes[theme].muted}">${visibilityLabel} · ${report.mode === "all-time" ? "Calculated sums of GitHub counts" : "GitHub-provided counts"} · ${report.coverage.complete ? "Available coverage" : "Partial coverage"} · Updated ${escapeXml(report.retrievedAt.slice(0, 10))}</text>`,
     `${report.profile.login}’s GitHub Wrapped`,
     `${description} Activity grade: ${ranking?.grade ?? "unavailable"}. Based on average contributions per fetched year, including partial years as-is; not a GitHub percentile or skill rating.`,
     theme,

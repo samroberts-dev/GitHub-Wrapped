@@ -338,15 +338,13 @@ export function Landing() {
             </p>
           </div>
           <a
-            href="https://github.com/topics/github-wrapped"
+            href="https://github.com/samroberts-dev/GitHub-Wrapped"
             target="_blank"
             rel="noreferrer"
             className="community-link"
           >
-            Explore GitHub Wrapped projects ↗
-            <small>
-              This project’s public repository is not configured yet.
-            </small>
+            Contribute on GitHub ↗
+            <small>Themes, ideas, and first contributions welcome.</small>
           </a>
         </section>
       </main>

@@ -73,7 +73,7 @@ describe("SVG output", () => {
     expect(svg).toContain("1,284");
     expect(svg).not.toMatch(/<foreignObject|<image|<script|onload=|href=/i);
   });
-  it("marks withheld calendars unavailable rather than zero", () => {
+  it("marks missing calendars unavailable rather than zero", () => {
     const input = structuredClone(report);
     input.periods[0].contributions = null;
     input.coverage.complete = false;

@@ -11,6 +11,7 @@ export interface ContributionPeriod {
   to: string;
   source: "github";
   contributions: number | null;
+  includesAnonymizedContributions: boolean;
   commits: number;
   pullRequests: number;
   issues: number;

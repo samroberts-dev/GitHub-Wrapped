@@ -5,7 +5,7 @@
 After deploying to a public HTTPS domain, paste this into your GitHub profile README:
 
 ```markdown
-![My GitHub Wrapped](https://YOUR_DOMAIN/api/card?username=octocat&year=2025&theme=default)
+![My GitHub Wrapped](https://git-hub-wrapped-phi.vercel.app/api/card?username=samroberts-dev&year=2026&theme=default)
 ```
 
 Your GitHub profile README lives in the public repository with the same name as your GitHub username, in its README.md. The short profile bio field does not render Markdown images. The landing form generates a card URL and Markdown for you; deployment maintainers supply the token, not card users.
@@ -13,7 +13,7 @@ Your GitHub profile README lives in the public repository with the same name as 
 Available-history example:
 
 ```markdown
-![My GitHub journey](https://YOUR_DOMAIN/api/card?username=octocat&mode=all-time&theme=midnight)
+![My GitHub journey](https://git-hub-wrapped-phi.vercel.app/api/card?username=samroberts-dev&mode=all-time&theme=midnight)
 ```
 
 ### GET /api/card
@@ -59,7 +59,7 @@ On the website, hover over a generated card to flip to the public profile, inclu
 
 Profile data and per-period counts come directly from GitHub. Card totals for multiple years are calculated sums. Public repository count is a current snapshot, not a count from the requested historical year. Contribution totals include GitHub's eligible activity categories and do not equal the sum of the three displayed activity counters. See [GitHub's contribution schema](https://docs.github.com/en/graphql/reference/users#contributionscollection).
 
-All-time fetches up to 20 distinct contribution years exposed by GitHub, newest first, in bounded single-year requests. Coverage reports omitted years. GitHub's historical coverage and contribution rules still apply; this is not a guarantee of full lifetime activity. Current-year requests end at retrieval time. If restricted activity appears, aggregate calendars and daily values are withheld rather than mislabelled public. Derived streaks, personalities, languages and stars remain later work.
+All-time fetches up to 20 distinct contribution years exposed by GitHub, newest first, in bounded single-year requests. Coverage reports omitted years. GitHub's historical coverage and contribution rules still apply; this is not a guarantee of full lifetime activity. Current-year requests end at retrieval time. Calendars can include anonymized private-activity counts the user opted to share publicly. Those totals remain usable and gradeable; `includesAnonymizedContributions` identifies them in JSON, and cards display “Public + shared anonymous counts”. No private repository details are accessed. Breakdown counts may not sum to the calendar total. Derived streaks, personalities, languages and stars remain later work.
 
 Requests have a 50-second total upstream deadline and no automatic retries. A failure aborts the report; partial GraphQL responses are never cached as success. Per-process caching keeps up to 100 successful public reports for five minutes, deduplicates concurrent requests for a report, and limits active report builds to four. Failed reports are not cached.
 

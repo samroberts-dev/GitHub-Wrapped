@@ -61,12 +61,13 @@ describe("normalization", () => {
     expect(normalized.source).toBe("github");
     expect(normalized.repositoriesWithCommits).toBe(2);
   });
-  it("withholds restricted calendars instead of labelling them public", () => {
+  it("preserves user-shared anonymous counts without accessing private details", () => {
     const data = period();
     data.user.contributionsCollection.restrictedContributionsCount = 4;
     expect(normalizePeriod(2025, data.user)).toMatchObject({
-      contributions: null,
-      days: null,
+      contributions: 12,
+      includesAnonymizedContributions: true,
+      days: [{ date: "2025-01-01", count: 12 }],
     });
   });
   it("deduplicates, bounds and discloses omitted history", () => {
@@ -89,6 +90,40 @@ describe("normalization", () => {
 });
 
 describe("GitHub service", () => {
+  it("keeps shared anonymous calendars complete and eligible for grading", async () => {
+    vi.resetModules();
+    vi.stubEnv("GITHUB_TOKEN", "ghp_test_secret");
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async (url: string, options?: RequestInit) => {
+        if (url.endsWith("/user"))
+          return reply({}, 200, { "x-oauth-scopes": "" });
+        const body = JSON.parse(options?.body as string);
+        const data = period();
+        data.user.contributionsCollection.restrictedContributionsCount = 4;
+        return reply({
+          data: body.query.includes("query Profile") ? profile() : data,
+        });
+      }),
+    );
+    const { getReport } = await import("../../src/lib/github/report");
+    const { renderCard } = await import("../../src/features/cards/render");
+    const report = await getReport({
+      username: "octocat",
+      mode: "yearly",
+      year: 2025,
+    });
+    expect(report.coverage.complete).toBe(true);
+    expect(report.periods[0].contributions).toBe(12);
+    expect(report.coverage.notes.join(" ")).toContain(
+      "user chose to share publicly",
+    );
+    const svg = renderCard(report);
+    expect(svg).toContain("Public + shared anonymous counts");
+    expect(svg).toContain(">E</text>");
+    expect(svg).not.toContain("GRADE UNAVAILABLE");
+    expect(svg).not.toContain("N/A");
+  });
   beforeEach(() => {
     vi.resetModules();
     vi.stubEnv("GITHUB_TOKEN", "ghp_test_secret");

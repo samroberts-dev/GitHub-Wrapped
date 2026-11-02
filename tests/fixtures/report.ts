@@ -17,6 +17,7 @@ export const report: GitHubReport = {
       to: "2025-12-31T23:59:59Z",
       source: "github",
       contributions: 1284,
+      includesAnonymizedContributions: false,
       commits: 1024,
       pullRequests: 89,
       issues: 42,

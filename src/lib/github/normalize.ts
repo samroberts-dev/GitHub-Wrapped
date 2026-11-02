@@ -23,29 +23,27 @@ export function normalizePeriod(
   data: NonNullable<z.infer<typeof periodResponseSchema>["user"]>,
 ): ContributionPeriod {
   const c = data.contributionsCollection;
-  const safeCalendar = c.restrictedContributionsCount === 0;
   return {
     year,
     from: c.startedAt,
     to: c.endedAt,
     source: "github",
-    contributions: safeCalendar
-      ? c.contributionCalendar.totalContributions
-      : null,
+    // With the verified public-only token, restricted counts are user-opted-in
+    // anonymous activity. They are not missing data or private repository access.
+    contributions: c.contributionCalendar.totalContributions,
+    includesAnonymizedContributions: c.restrictedContributionsCount > 0,
     commits: c.totalCommitContributions,
     pullRequests: c.totalPullRequestContributions,
     issues: c.totalIssueContributions,
     repositoriesCreated: c.totalRepositoryContributions,
     repositoriesWithCommits: c.totalRepositoriesWithContributedCommits,
-    days: safeCalendar
-      ? c.contributionCalendar.weeks
-          .flatMap((w) => w.contributionDays)
-          .filter(
-            (d) =>
-              d.date >= c.startedAt.slice(0, 10) &&
-              d.date <= c.endedAt.slice(0, 10),
-          )
-          .map((d) => ({ date: d.date, count: d.contributionCount }))
-      : null,
+    days: c.contributionCalendar.weeks
+      .flatMap((w) => w.contributionDays)
+      .filter(
+        (d) =>
+          d.date >= c.startedAt.slice(0, 10) &&
+          d.date <= c.endedAt.slice(0, 10),
+      )
+      .map((d) => ({ date: d.date, count: d.contributionCount })),
   };
 }

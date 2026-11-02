@@ -89,9 +89,9 @@ async function buildReport(
     "All-time coverage uses the contribution years exposed by GitHub, with a maximum of 20 year windows.",
     "Repositories with commits is not a count of every repository contributed to.",
   ];
-  if (periods.some((p) => p.days === null))
+  if (periods.some((p) => p.includesAnonymizedContributions))
     notes.push(
-      "Some calendars were withheld because GitHub included restricted contributions; unavailable values are not zero.",
+      "Calendar totals include anonymized private-activity counts that the user chose to share publicly. Private repository details are not accessed. Activity breakdowns may not sum to the calendar total.",
     );
   if (selected.omitted.length)
     notes.push("Older years were omitted by the request budget.");

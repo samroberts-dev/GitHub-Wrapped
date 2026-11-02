@@ -16,7 +16,7 @@ The App Router provides pages and future API routes. TypeScript enforces contrac
 
 ## Refinements to the proposal
 
-Normalized metrics should carry provenance (`github` or `calculated`), coverage dates, retrieval time and reasons for incomplete coverage. Never turn unavailable values into zero. All-time means available history, not guaranteed complete lifetime activity. Owned-repository languages and contribution languages are different measurements.
+Normalized metrics should carry provenance (`github` or `calculated`), coverage dates, retrieval time and reasons for incomplete coverage. Never turn unavailable values into zero. User-opted-in anonymous activity counts are visible data, not missing coverage: keep calendar totals and label them using `includesAnonymizedContributions`. All-time means available history, not guaranteed complete lifetime activity. Owned-repository languages and contribution languages are different measurements.
 
 GitHub transport must use `server-only`, bounded pagination, timeouts, budgets, rate-limit responses and scoped caches. Public lookups must not expose the server token owner's private activity. Private counts need explicit user authorization and separate privacy-aware cache scopes. Never expose a token through NEXT_PUBLIC variables.
 

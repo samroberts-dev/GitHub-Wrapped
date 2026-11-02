@@ -4,6 +4,8 @@
 
 An independent, MIT-licensed GitHub retrospective. Not affiliated with GitHub or Spotify.
 
+[Live site](https://git-hub-wrapped-phi.vercel.app/) · [Source repository](https://github.com/samroberts-dev/GitHub-Wrapped)
+
 ## README cards + JSON API
 
 Generate an SVG of your public GitHub contributions and embed it in a profile README. Includes yearly and available-history cards, three themes, a Markdown builder, and a JSON endpoint for custom integrations. The decorative landing preview and sample slides remain explicitly illustrative.
@@ -11,10 +13,10 @@ Generate an SVG of your public GitHub contributions and embed it in a profile RE
 Cards include a documented F–S activity grade. On the website, hover or tap to flip the generated card over for the developer's avatar and bio. The README image stays static. See [grade rules and profile preview](docs/api.md#activity-grade).
 
 ```markdown
-![My GitHub Wrapped](https://YOUR_DOMAIN/api/card?username=octocat&year=2025&theme=default)
+![My GitHub Wrapped](https://git-hub-wrapped-phi.vercel.app/api/card?username=samroberts-dev&year=2026&theme=default)
 ```
 
-Replace `YOUR_DOMAIN` with your public HTTPS deployment and `octocat` with your username. This belongs in a **profile README**, not GitHub's short bio field. See [API setup and parameters](docs/api.md).
+Replace `samroberts-dev` with your username. If self-hosting, replace the domain with your deployment. This belongs in a **profile README**, not GitHub's short bio field. See [API setup and parameters](docs/api.md).
 
 ## Run and test
 
@@ -68,7 +70,7 @@ git init
 git add .
 git commit -m "Build GitHub Wrapped foundation"
 git branch -M main
-git remote add origin https://github.com/YOUR_ACCOUNT/github-wrapped.git
+git remote add origin https://github.com/samroberts-dev/GitHub-Wrapped.git
 git push -u origin main
 ```
 

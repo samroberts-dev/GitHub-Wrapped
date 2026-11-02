@@ -167,6 +167,7 @@ test("SVG cards are valid XML, fit their canvas, and render all themes", async (
       .screenshot({ path: testInfo.outputPath(`${theme}-sample.png`) });
     const longName = structuredClone(report);
     longName.profile.name = "W".repeat(80);
+    longName.periods[0].includesAnonymizedContributions = true;
     const svg = renderCard(longName, theme);
     await page.setContent(svg);
     expect(
