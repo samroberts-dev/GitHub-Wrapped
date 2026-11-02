@@ -22,4 +22,4 @@ GitHub transport must use `server-only`, bounded pagination, timeouts, budgets, 
 
 Daily calendars cannot establish a Night Owl personality. Document thresholds, precedence and tie-breaking using only supported data. Keep analytics, slide content and theme tokens independent. Add localization message keys when content stabilizes.
 
-Phase 1 has no GitHub calls, persistence or authentication. The form validates and explains availability. Every statistic is illustrative. The theme registry is an introductory token system; complete presentation plugins and theme validation arrive later.
+Phase 2 uses server-only GitHub access in `src/lib/github`, a normalized report contract in `src/types/report.ts`, and pure SVG rendering in `src/features/cards/render.ts`. `/api/card` serves the README image; `/api/wrapped` serves JSON. The landing page builds embed Markdown and previews the image. Both endpoints reuse the same public report service and bounded cache. See [API documentation](api.md) for privacy rules and budgets. The original decorative preview remains illustrative. Full analytics and storytelling remain later milestones.

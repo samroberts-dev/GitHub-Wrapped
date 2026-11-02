@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { reportRequestSchema } from "@/lib/validation/report";
 import { themes, type ThemeId } from "@/themes";
+import { EmbedPreview } from "../cards/embed-preview";
 
 const sample = [
   {
@@ -32,11 +33,13 @@ const sample = [
 ];
 
 export function Landing() {
-  const currentYear = new Date().getFullYear();
+  const currentYear = new Date().getUTCFullYear();
   const [mode, setMode] = useState<"yearly" | "all-time">("yearly");
   const [year, setYear] = useState(currentYear - 1);
   const [username, setUsername] = useState("");
   const [message, setMessage] = useState("");
+  const [embedUrl, setEmbedUrl] = useState("");
+  const [cardTheme, setCardTheme] = useState<ThemeId>("default");
   const [slide, setSlide] = useState<number | null>(null);
   const [theme, setTheme] = useState<ThemeId>("default");
   const reduced = useReducedMotion();
@@ -69,12 +72,27 @@ export function Landing() {
       mode,
       year,
     });
+    if (!result.success) {
+      setMessage(result.error.issues[0].message);
+      return;
+    }
+    const params = new URLSearchParams({
+      username: result.data.username,
+      mode: result.data.mode,
+      theme: cardTheme,
+    });
+    if (result.data.mode === "yearly")
+      params.set("year", String(result.data.year));
+    setEmbedUrl(`${window.location.origin}/api/card?${params}`);
     setMessage(
-      result.success
-        ? "Your input is ready. Live GitHub reports arrive in Phase 2. Explore the sample below in the meantime."
-        : result.error.issues[0].message,
+      "Your card URL and Markdown are ready below. The preview loads from the API.",
     );
   }
+
+  useEffect(() => {
+    if (embedUrl)
+      document.getElementById("live-report")?.focus({ preventScroll: false });
+  }, [embedUrl]);
 
   return (
     <>
@@ -110,7 +128,7 @@ export function Landing() {
             <p className="intro">
               The late nights. The first pull request. The “it finally works.”
               <br className="desktop-break" /> Turn your GitHub activity into a
-              story that’s uniquely you.
+              card for your GitHub profile README.
             </p>
             <form onSubmit={submit} noValidate className="generator">
               <div
@@ -164,8 +182,21 @@ export function Landing() {
                   </select>
                 )}
               </div>
+              <label className="theme-label">
+                Card theme{" "}
+                <select
+                  value={cardTheme}
+                  onChange={(e) => setCardTheme(e.target.value as ThemeId)}
+                >
+                  {Object.entries(themes).map(([id, value]) => (
+                    <option key={id} value={id}>
+                      {value.name}
+                    </option>
+                  ))}
+                </select>
+              </label>
               <button className="generate" type="submit">
-                Generate my Wrapped <span>↗</span>
+                Generate my card <span>↗</span>
               </button>
               <p
                 id="form-message"
@@ -225,7 +256,7 @@ export function Landing() {
                 ))}
               </div>
               <div className="card-bottom">
-                <span>YOUR CODE. YOUR JOURNEY. YOUR YEAR.</span>
+                <span>ILLUSTRATIVE SAMPLE</span>
                 <span>✦</span>
               </div>
             </motion.div>
@@ -248,44 +279,45 @@ export function Landing() {
           <span>YOUR YEAR, IN CODE</span> ✳ <span>EVERY COMMIT COUNTS</span>
         </div>
 
+        {embedUrl && <EmbedPreview key={embedUrl} url={embedUrl} />}
         <section className="story-section shell" id="how-it-works">
           <div className="section-heading">
             <div>
-              <div className="eyebrow">MORE THAN A CONTRIBUTION GRAPH</div>
-              <h2>There’s a story in those squares.</h2>
+              <div className="eyebrow">ONE URL. YOUR GITHUB STORY.</div>
+              <h2>Made for your README.</h2>
             </div>
             <p>
-              From your first “hello world” to your next big thing.
+              Turn your public activity into an embeddable card.
               <br />
-              Here’s what we’re building to help you see it.
+              Pick your period, choose your colors, and make it yours.
             </p>
           </div>
           <div className="features">
             <article>
-              <span className="feature-icon pink">↗</span>
+              <span className="feature-icon sky">↗</span>
               <span className="feature-index">01</span>
-              <h3>Your year, unpacked.</h3>
+              <h3>Build your card.</h3>
               <p>
-                Commits, pull requests, streaks, and the languages that shaped
-                your year.
+                Contributions, commits, pull requests, and issues. Choose a year
+                or explore the history GitHub makes available.
               </p>
             </article>
             <article>
-              <span className="feature-icon lime">✳</span>
+              <span className="feature-icon green">✳</span>
               <span className="feature-index">02</span>
-              <h3>A little developer DNA.</h3>
+              <h3>Find your colors.</h3>
               <p>
-                Discover your coding personality through transparent, documented
-                analytics.
+                Wrapped Default, Midnight, or Sunset. Pick a theme that feels at
+                home on your profile.
               </p>
             </article>
             <article>
-              <span className="feature-icon orange">∞</span>
+              <span className="feature-icon mint">∞</span>
               <span className="feature-index">03</span>
-              <h3>The whole journey.</h3>
+              <h3>Paste. Push. Wrapped.</h3>
               <p>
-                Zoom out. Explore milestones and the bigger picture across
-                available history.
+                Copy a line of Markdown into your profile README. Your card
+                loads from the API and refreshes through its caches.
               </p>
             </article>
           </div>

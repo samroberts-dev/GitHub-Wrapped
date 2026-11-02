@@ -4,20 +4,31 @@
 
 An independent, MIT-licensed GitHub retrospective. Not affiliated with GitHub or Spotify.
 
-## Phase 1
+## README cards + JSON API
 
-Responsive landing page, yearly/all-time controls, username validation, three labelled sample slides and three theme previews. Live reports are not implemented. Generate validates input and explains availability; statistics are illustrative.
+Generate an SVG of your public GitHub contributions and embed it in a profile README. Includes yearly and available-history cards, three themes, a Markdown builder, and a JSON endpoint for custom integrations. The decorative landing preview and sample slides remain explicitly illustrative.
+
+Cards include a documented F–S activity grade. On the website, hover or tap to flip the generated card over for the developer's avatar and bio. The README image stays static. See [grade rules and profile preview](docs/api.md#activity-grade).
+
+```markdown
+![My GitHub Wrapped](https://YOUR_DOMAIN/api/card?username=octocat&year=2025&theme=default)
+```
+
+Replace `YOUR_DOMAIN` with your public HTTPS deployment and `octocat` with your username. This belongs in a **profile README**, not GitHub's short bio field. See [API setup and parameters](docs/api.md).
 
 ## Run and test
 
-Use Node.js 22.12+ (24 recommended) and npm. No token is required.
+Use Node.js 22.12+ (24 recommended) and npm. The landing page works without a token; live cards require the server configuration below.
 
 ```powershell
 npm ci
+Copy-Item .env.example .env.local
 npm run dev
 ```
 
 Open http://localhost:3000.
+
+Set `GITHUB_TOKEN` in `.env.local` to a classic personal access token with **public_repo only** (a no-scope classic token is also accepted if GitHub permits the requested fields). The server rejects private-access scopes and fine-grained/App tokens. Never put the token in a card URL, Markdown, browser code, or a `NEXT_PUBLIC_` variable. Restart after changing configuration. See [GitHub's GraphQL authentication guide](https://docs.github.com/en/graphql/guides/forming-calls-with-graphql).
 
 ```powershell
 npm run typecheck
@@ -63,6 +74,6 @@ git push -u origin main
 
 Replace the discovery URL in `src/features/wrapped/landing.tsx` with the real project URL. Add a private conduct-reporting contact, enable Discussions, import `.github/labels.json`, and protect main with required CI checks. Label definitions do not create remote labels automatically.
 
-For Vercel, import the public repository using the Next.js preset. Phase 1 requires no secrets. Repository publication and deployment are account operations and are not completed by this source setup.
+For Vercel, import the public repository using the Next.js preset and set the server-only `GITHUB_TOKEN` environment variable. Redeploy after adding it. Make the card endpoint public so GitHub's image proxy can fetch it. Repository publication and deployment are account operations and are not completed by this source setup.
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). Themes, analytics, translations, documentation and beginner fixes are welcome. New analytics require tests; themes require responsive and accessibility validation. [MIT license](LICENSE).
