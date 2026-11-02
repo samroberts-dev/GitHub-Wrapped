@@ -1,0 +1,9 @@
+name: Feature proposal
+description: Suggest a theme, insight, integration or improvement
+body:
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What problem would this solve, and how?
+    validations:
+      required: true

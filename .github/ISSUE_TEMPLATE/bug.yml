@@ -1,0 +1,10 @@
+name: Bug report
+description: Report a reproducible problem
+body:
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps, expected and actual behavior
+      description: Include browser and screen size. Never include secrets or private data.
+    validations:
+      required: true
